@@ -134,4 +134,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "knox.auth.TokenAuthentication",
     ],
+    "DATETIME_FORMAT": "%s000",
+    "DEFAULT_PAGINATION_CLASS": "django_rest.pagination.CustomPagination",
+    "PAGE_SIZE": 20,
 }

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User
+from .models import *
 from django.contrib.auth import authenticate
 import re
 
@@ -9,7 +9,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = (
+        fields = [
             "id",
             "name",
             "username",
@@ -17,7 +17,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             "password",
             "confirmed_password",
             "date_of_birth",
-        )
+        ]
         extra_kwargs = {"password": {"write_only": True}}
 
     def create(self, validated_data):
@@ -55,4 +55,26 @@ class LoginSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ("id", "name", "username", "email", "password", "date_of_birth")
+        fields = ["id", "name", "username", "email", "password", "date_of_birth"]
+
+
+class TodosSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Todos
+        fields = ["id", "title", "description", "due", "completed"]
+        extra_kwargs = {"title": {"required": True}, "due": {"required": True}}
+
+    def create(self, validated_data):
+        # more safe
+        # user = None
+        # request = self.context.get("request")
+        # if request and hasattr(request, "user"):
+        #     user = request.user
+        todos = Todos.objects.create(
+            user=self.context.get("request").user,
+            title=validated_data["title"],
+            description=validated_data["description"],
+            completed=validated_data["completed"],
+            due=validated_data["due"],
+        )
+        return todos
