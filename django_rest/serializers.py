@@ -17,6 +17,19 @@ class RegisterSerializer(serializers.ModelSerializer):
             "date_of_birth",
         )
 
+    def validate_password1(self, data):
+        result = password_validation.validate_password(data["password"])
+        if data["password"] != data["password2"]:
+            raise serializers.ValidationError("Password doesn't match")
+        elif result is None:
+            raise serializers.ValidationError("The password is not strong enough")
+        else:
+            return data
+
+    def validate(self, data):
+        self.validate_password1(data)
+        return super().validate(data)
+
     def create(self, validated_data):
         user = User.objects.create(
             name=validated_data["name"],
@@ -26,15 +39,6 @@ class RegisterSerializer(serializers.ModelSerializer):
             date_of_birth=validated_data["date_of_birth"],
         )
         return user
-
-    def validate_password1(self, data):
-        result = password_validation.validate_password(data["password"], self.user)
-        if data["password"] != data["password2"]:
-            raise serializers.ValidationError("Password doesn't match")
-        elif result is None:
-            raise serializers.ValidationError("The password is not strong enough")
-        else:
-            return data
 
 
 class LoginSerializer(serializers.Serializer):
