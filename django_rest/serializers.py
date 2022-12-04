@@ -1,44 +1,40 @@
 from rest_framework import serializers
 from .models import User
-from django.contrib.auth import authenticate
-import re
+from django.contrib.auth import authenticate, password_validation, hashers
 
 
 class RegisterSerializer(serializers.ModelSerializer):
-    confirmed_password = serializers.CharField()
+    password2 = serializers.CharField()
 
     class Meta:
         model = User
         fields = (
             "id",
             "name",
-            "username",
             "email",
             "password",
-            "confirmed_password",
+            "password2",
             "date_of_birth",
         )
-        extra_kwargs = {"password": {"write_only": True}}
 
     def create(self, validated_data):
-        user = User.objects.create_user(
+        user = User.objects.create(
             name=validated_data["name"],
-            username=validated_data["username"],
+            username=validated_data["email"],
             email=validated_data["email"],
-            password=validated_data["password"],
+            password=hashers.make_password(validated_data["password"]),
             date_of_birth=validated_data["date_of_birth"],
         )
         return user
 
-    def validate(self, data):
-        if data["password"] == data["confirmed_password"] and re.match(
-            r"^(?=[^\d_].*?\d)\w(\w|[!@#$%]){7,20}", data["password"]
-        ):
-            return data
-        elif not re.match(r"^(?=[^\d_].*?\d)\w(\w|[!@#$%]){7,20}", data["password"]):
+    def validate_password1(self, data):
+        result = password_validation.validate_password(data["password"], self.user)
+        if data["password"] != data["password2"]:
+            raise serializers.ValidationError("Password doesn't match")
+        elif result is None:
             raise serializers.ValidationError("The password is not strong enough")
         else:
-            raise serializers.ValidationError("Password doesn't match")
+            return data
 
 
 class LoginSerializer(serializers.Serializer):
@@ -46,6 +42,7 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField()
 
     def validate(self, data):
+        # self.password = hashers.make_password(self.password)
         user = authenticate(**data)
         if user and user.is_active:
             return user
@@ -55,4 +52,9 @@ class LoginSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ("id", "name", "username", "email", "password", "date_of_birth")
+        fields = (
+            "pk",
+            "name",
+            "email",
+            "date_of_birth",
+        )
