@@ -8,8 +8,8 @@ router = routers.DefaultRouter()
 router.register(r"todos", TodosView, "todos")
 
 urlpatterns = [
-    path("api/", include(router.urls)),
-    path("register/", RegisterAPI.as_view()),
-    path("login/", LoginAPI.as_view()),
-    path("logout/", knox_views.LogoutView.as_view(), name="knox_logout"),
+    path("", include(router.urls)),
+    path("auth/registration/", RegisterAPI.as_view()),
+    path("auth/login/", LoginAPI.as_view()),
+    path("auth/logout/", knox_views.LogoutView.as_view(), name="knox_logout"),
 ]
