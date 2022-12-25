@@ -61,7 +61,7 @@ The project should now be running at http://localhost:8000/ and for testing, hea
 
 You can test the project using [Postman](https://www.postman.com/) or follow the following `curl` commands. This branch has more endpoints than [the Rest Registration endpoints](https://github.com/ahr9n/django-rest-auth/blob/main/README.md).
 
-## For testing, use the following curl commands
+### For testing, use the following curl commands:
 
 1. Get to-dos:
 
