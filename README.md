@@ -10,7 +10,7 @@ This is a Django Rest Framework project that implements registration and authent
 
 ## Installation
 
-Before you start, consider that I implemented the project with [poetry@1.2.2](https://github.com/ahr9n/common-scripts/blob/main/python-poetry.sh), so if you need any troubleshooting; address the problem and [start an issue on this repository](https://github.com/ahr9n/bulletin-board-system/issues/new). Here we go!
+Before you start, consider that I implemented the project with [poetry@1.2.2](https://github.com/ahr9n/common-scripts/blob/main/python-poetry.sh), so if you need any troubleshooting; address the problem and [start an issue on this repository](https://github.com/ahr9n/django-rest-auth/issues/new). Here we go!
 
 1. Clone the repository to your local machine and head to the project:
 
